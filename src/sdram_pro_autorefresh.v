@@ -57,7 +57,7 @@ module sdram_pro_autorefresh(
 				cnt_15us <= 'd0;
 			end
 			else begin
-				cnt_15us <= cnt_15us = 1'b1;
+				cnt_15us <= cnt_15us + 1'b1;
 			end
 		end
 	end
@@ -133,7 +133,7 @@ module sdram_pro_autorefresh(
 				end
 			end
 			ATREF_ATREF : begin
-				next_state = ATREF_IDLE;
+				next_state = ATREF_END;
 			end
 			ATREF_END : begin
 				if(flag_trc) begin
@@ -181,7 +181,7 @@ module sdram_pro_autorefresh(
 					atref_cmd	<= `NO_OPERATION;
 					atref_bank	<= 2'b11;
 					atref_addr	<= 12'hfff;
-					atref_end	<= 1'b0;
+					atref_end	<= 1'b1;
 				end
 				default : begin
 					atref_cmd	<= `NO_OPERATION;

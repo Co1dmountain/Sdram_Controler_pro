@@ -9,5 +9,6 @@
 `define	WRITE					4'b0100
 `define	READ					4'b0101
 `define ACTIVE					4'b0011
+`define BURST_TERMINATE			4'b0110
 
 // 地址信号是否需要定义？

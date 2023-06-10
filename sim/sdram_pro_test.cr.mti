@@ -1,9 +1,26 @@
-D:/ic/project/Sdram_Controler_pro/Sdram_Controler_pro/sim/sdram_pro_tb.v {1 {vlog -work work -vopt -stats=none D:/ic/project/Sdram_Controler_pro/Sdram_Controler_pro/sim/sdram_pro_tb.v
+D:/ic/project/Sdram_Controler_pro/Sdram_Controler_pro/src/sdram_pro_write.v {1 {vlog -work work -vopt -stats=none D:/ic/project/Sdram_Controler_pro/Sdram_Controler_pro/src/sdram_pro_write.v
+Model Technology ModelSim SE-64 vlog 10.5 Compiler 2016.02 Feb 13 2016
+-- Compiling module sdram_pro_write
+
+Top level modules:
+	sdram_pro_write
+
+} {} {}} D:/ic/project/Sdram_Controler_pro/Sdram_Controler_pro/sim/sdram_pro_tb.v {1 {vlog -work work -vopt -stats=none D:/ic/project/Sdram_Controler_pro/Sdram_Controler_pro/sim/sdram_pro_tb.v
 Model Technology ModelSim SE-64 vlog 10.5 Compiler 2016.02 Feb 13 2016
 -- Compiling module sdram_pro_tb
 
 Top level modules:
 	sdram_pro_tb
+
+} {} {}} D:/ic/project/Sdram_Controler_pro/Sdram_Controler_pro/src/defines.v {1 {vlog -work work -vopt -stats=none D:/ic/project/Sdram_Controler_pro/Sdram_Controler_pro/src/defines.v
+Model Technology ModelSim SE-64 vlog 10.5 Compiler 2016.02 Feb 13 2016
+
+} {} {}} D:/ic/project/Sdram_Controler_pro/Sdram_Controler_pro/src/sdram_pro_autorefresh.v {1 {vlog -work work -vopt -stats=none D:/ic/project/Sdram_Controler_pro/Sdram_Controler_pro/src/sdram_pro_autorefresh.v
+Model Technology ModelSim SE-64 vlog 10.5 Compiler 2016.02 Feb 13 2016
+-- Compiling module sdram_pro_autorefresh
+
+Top level modules:
+	sdram_pro_autorefresh
 
 } {} {}} D:/ic/project/Sdram_Controler_pro/Sdram_Controler_pro/src/sdram_pro_init.v {1 {vlog -work work -vopt -stats=none D:/ic/project/Sdram_Controler_pro/Sdram_Controler_pro/src/sdram_pro_init.v
 Model Technology ModelSim SE-64 vlog 10.5 Compiler 2016.02 Feb 13 2016
@@ -11,9 +28,6 @@ Model Technology ModelSim SE-64 vlog 10.5 Compiler 2016.02 Feb 13 2016
 
 Top level modules:
 	sdram_pro_init
-
-} {} {}} D:/ic/project/Sdram_Controler_pro/Sdram_Controler_pro/src/defines.v {1 {vlog -work work -vopt -stats=none D:/ic/project/Sdram_Controler_pro/Sdram_Controler_pro/src/defines.v
-Model Technology ModelSim SE-64 vlog 10.5 Compiler 2016.02 Feb 13 2016
 
 } {} {}} D:/ic/project/Sdram_Controler_pro/Sdram_Controler_pro/sim/sdram_model_plus.v {1 {vlog -work work -vopt -stats=none D:/ic/project/Sdram_Controler_pro/Sdram_Controler_pro/sim/sdram_model_plus.v
 Model Technology ModelSim SE-64 vlog 10.5 Compiler 2016.02 Feb 13 2016
