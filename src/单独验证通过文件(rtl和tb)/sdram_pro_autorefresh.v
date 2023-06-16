@@ -10,16 +10,15 @@ module sdram_pro_autorefresh(
 		// input
 		input					sys_clk					,
 		input					sys_rst_n				,
+		input					atref_en				,
 		input					init_end				,  // ? 是否需要这个信号？ 感觉可以放到top模块中
 														   // 需要这个信号，初始化完成之后刷新计数器才能开始工作，每15625ns产生一次刷新请求
 		// output
+		output	reg				atref_req				,  // 需要周期性给出刷新信号
 		output	reg	[ 3:0]		atref_cmd				,
 		output	reg	[ 1:0]		atref_bank				,
 		output	reg [11:0]		atref_addr				,
-		output	reg				atref_end				,
-		// arbit
-		input					atref_en				,
-		output	reg				atref_req
+		output	reg				atref_end				
 );
 
 	//// define ////

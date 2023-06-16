@@ -12,6 +12,7 @@ module sdram_pro_write(
 		input		[9:0]		wr_burst_len				, // 突发长度
 		input		[15:0]		wr_data						, // 写数据，从fifo来的数据，要写入sdram
 		input		[22:0]		wr_addr						, // 包括9位行地址，11位列地址，2位bank地址
+		input					wr_en						, // 写使能信号
 		input					init_end					, // 初始化完成信号，所有操作需要在初始化完成之后进行
 		// output
 		output	reg	[3:0]		wr_sdram_cmd				,
@@ -21,10 +22,7 @@ module sdram_pro_write(
 		output					wr_ack						, // 写操作响应信号，表示该模块对SDRAM进行了写操作（因为写操作的数据来源是FIFO，所以该信号可以作为FIFO的读使能，所以要提前一个时钟周期）
 		// output 输出给sdram的数据
 		output		[15:0]		wr_sdram_data				, // 要写入sdram的数据
-		output	reg				wr_sdram_en					, // 数据总线输出使能,用于后续仲裁模块输出
-		// arbit
-		input					wr_en						  // 写使能信号
-
+		output	reg				wr_sdram_en					  // 数据总线输出使能,用于后续仲裁模块输出
 );
 
 	//// define ////
@@ -199,7 +197,7 @@ module sdram_pro_write(
 		else begin
 			case(cur_state) 
 				WR_IDLE : begin
-					wr_sdram_cmd	<= `PRECHARGE;
+					wr_sdram_cmd	<= `NO_OPERATION;
 					wr_sdram_addr	<= 12'hfff;
 					wr_sdram_bank	<= 2'b11;
 					wr_end			<= 1'b0;
@@ -235,6 +233,10 @@ module sdram_pro_write(
 						wr_sdram_bank	<= 2'b11;
 						wr_end			<= 1'b0;
 					end
+					// wr_sdram_cmd	<= `NO_OPERATION;
+					// wr_sdram_addr	<= 12'hfff;
+					// wr_sdram_bank	<= 2'b11;
+					// wr_end			<= 1'b0;
 				end
 				WR_TERMINATE : begin
 					wr_sdram_cmd	<= `BURST_TERMINATE;
@@ -252,7 +254,7 @@ module sdram_pro_write(
 					wr_sdram_cmd	<= `NO_OPERATION;
 					wr_sdram_addr	<= 12'hfff;
 					wr_sdram_bank	<= 2'b11;
-					wr_end			<= 1'b1;  // 提前拉高wr_end
+					wr_end			<= 1'b1;
 				end
 				WR_END : begin
 					wr_sdram_cmd	<= `NO_OPERATION;

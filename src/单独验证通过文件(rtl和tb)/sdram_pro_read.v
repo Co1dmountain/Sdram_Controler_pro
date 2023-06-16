@@ -1,5 +1,5 @@
 /**** 
-		读数据模块 
+		写数据模块 
 		根据sdram芯片手册提供的时序图使用状态机来实现
 		页突发写 full page burst -> 突发长度最大只能写一行512个数据
 ****/
@@ -12,18 +12,16 @@ module sdram_pro_read(
 		input					init_end				, // ?
 		//input					wr_end					, // ?
 		input		[22:0]		rd_addr					, // 包括行地址、列地址、bank地址 9 + 12 + 2 = 23
+		input					rd_en					,
 		input		[9:0]		rd_burst_len			,
-		input		[15:0]		rd_sdram_data			, // 从sdram读出的信号 
+		input		[15:0]		rd_sdram_data			,
 		// output
-		output	reg				rd_data_valid			, // 拉高表示此时读出数据有效，可以被后续模块使用
 		output					rd_ack					, // 与写模块一样，拉高表示此时正在读数据
 		output	reg				rd_end					,
 		output	reg	[15:0]		rd_data_out				,
 		output	reg	[3:0]		rd_sdram_cmd			,
 		output	reg	[11:0]		rd_sdram_addr			,
-		output	reg	[1:0]		rd_sdram_bank			,
-		// arbit
-		input					rd_en					
+		output	reg	[1:0]		rd_sdram_bank			
 );
 
 	//// define ////
@@ -59,7 +57,7 @@ module sdram_pro_read(
 	assign flag_trc = (cnt_trc == CNT_TRC - 1'b1) ? 1'b1 : 1'b0;
 	assign flag_trp = (cnt_trp == CNT_TRP - 1'b1) ? 1'b1 : 1'b0;
 	assign flag_cas_latency = (cnt_cas_latency == CNT_CAS_LATENCY - 1'b1) ? 1'b1 : 1'b0;
-	assign flag_burst_end = (cnt_burst == rd_burst_len - 'd4) ? 1'b1 : 1'b0;
+	assign flag_burst_end = (cnt_burst == rd_burst_len - 1'b1) ? 1'b1 : 1'b0;
 	
 	// cnts
 	// cnt_trc
@@ -180,13 +178,8 @@ module sdram_pro_read(
 					next_state = RD_TRP;
 				end
 			end
-			RD_END : begin // 需要保持在END状态
-				if(rd_en) begin
-					next_state = RD_IDLE;
-				end
-				else begin
-					next_state = RD_END;
-				end
+			RD_END : begin
+				next_state = RD_IDLE;
 			end
 			default : begin
 				next_state = RD_IDLE;
@@ -202,7 +195,6 @@ module sdram_pro_read(
 			rd_sdram_bank <= 2'b11;
 			rd_end        <= 1'b0;
 			rd_data_out   <= 16'dz;
-			rd_data_valid <= 1'b0;
 		end
 		else begin
 			case(cur_state) 
@@ -214,7 +206,9 @@ module sdram_pro_read(
 				end
 				RD_ACTIVE : begin
 					rd_sdram_cmd  <= `ACTIVE;
+					//rd_sdram_addr <= rd_addr[20:9];
 					rd_sdram_addr <= 12'h000;
+					//rd_sdram_bank <= rd_addr[22:21];
 					rd_sdram_bank <= 2'b00;
 					rd_end        <= 1'b0;
 				end
@@ -237,40 +231,29 @@ module sdram_pro_read(
 					rd_end        <= 1'b0;
 				end
 				RD_READ_DATA : begin
-					if(cnt_burst == rd_burst_len - 'd4) begin
-						rd_sdram_cmd	<= `BURST_TERMINATE;
-						rd_sdram_addr	<= 12'hfff;
-						rd_sdram_bank	<= 2'b11;
-						rd_end			<= 1'b0;
-					end
-					else begin
-						rd_sdram_cmd	<= `NO_OPERATION;
-						rd_sdram_addr   <= 12'hfff;
-						rd_sdram_bank   <= 2'b11;
-						rd_end          <= 1'b0;
-						rd_data_out     <= rd_sdram_data;
-						rd_data_valid   <= 1'b1; // 数据有效
-					end
+					rd_sdram_cmd  <= `NO_OPERATION;
+					rd_sdram_addr <= 12'hfff;
+					rd_sdram_bank <= 2'b11;
+					rd_end        <= 1'b0;
+					rd_data_out   <= rd_sdram_data;
 				end
 				RD_TERMINATE : begin
 					rd_sdram_cmd  <= `BURST_TERMINATE;
 					rd_sdram_addr <= 12'hfff;
 					rd_sdram_bank <= 2'b11;
 					rd_end        <= 1'b0;
-					rd_data_out   <= 16'dz;
-					rd_data_valid <= 1'b0; // 数据无效
 				end
 				RD_PRECHARGE : begin
 					rd_sdram_cmd  <= `PRECHARGE;
 					rd_sdram_addr <= 12'hfff;
-					rd_sdram_bank <= 2'b11;
+					rd_sdram_bank <= rd_addr[22:21];
 					rd_end        <= 1'b0;
 				end
 				RD_TRP : begin
 					rd_sdram_cmd  <= `NO_OPERATION;
 					rd_sdram_addr <= 12'hfff;
 					rd_sdram_bank <= 2'b11;
-					rd_end        <= 1'b1;
+					rd_end        <= 1'b0;
 				end
 				RD_END : begin
 					rd_sdram_cmd  <= `NO_OPERATION;
